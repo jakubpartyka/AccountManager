@@ -6,6 +6,8 @@ class DataManager {
 
     static int load(File selectedFile){
         try {
+            if(GraphicInterface.getModel().getAccounts().get(0).isEmpty())
+                GraphicInterface.getModel().removeRow(0);                           //removing first empty row
 
             BufferedReader fileReader = new BufferedReader(new FileReader(selectedFile));
 
@@ -30,5 +32,20 @@ class DataManager {
 
     static List<Account> getAccounts() {
         return accounts;
+    }
+
+    static boolean save(File fileToSave) {
+        try {
+            FileWriter fw = new FileWriter(fileToSave);
+            for (Account account : accounts) {
+                fw.write(account.toString());
+                fw.write("\n");
+            }
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

@@ -15,13 +15,13 @@ class Account {
         this.password = password;
     }
 
-    Account(String login, String password,String emailPassword, String date, String id){
+    Account(String login, String password,String emailPassword, String dateOfBirth, String id){
         this.login = login;
         this.password = password;
         this.email = login;
         this.emailPassword = emailPassword;
         this.id = id;
-        this.dateOfBirth = date;
+        this.dateOfBirth = dateOfBirth;
     }
 
     String getId() {
@@ -82,5 +82,14 @@ class Account {
 
     void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return login + ':' + password + ':' + emailPassword + ':' +dateOfBirth + ':' + id;
+    }
+
+    boolean isEmpty() {
+        return login.equals(" ") && id.equals(" ") && password.equals(" ");
     }
 }

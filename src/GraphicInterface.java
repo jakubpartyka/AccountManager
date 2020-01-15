@@ -1,14 +1,14 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.io.File;
 
 public class GraphicInterface {
-    private static File openedFile;
+    private static File selectedFile;
     private static JTable table;
     private static AccountTableModel model;
+    //todo boolean changes saved
 
     public static void main(String args[]) throws InterruptedException {
         //Creating the Frame
@@ -77,13 +77,12 @@ public class GraphicInterface {
 
     private static void loadFile(){
         //this method loads file chosen by user and then loads it with DataManager
-        JFileChooser jf = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt", "text");          //accepting text files only
-        jf.setFileFilter(filter);
-        int returnValue = jf.showOpenDialog(null);
+        JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt files only", "txt", "text");          //accepting text files only
+        fileChooser.setFileFilter(filter);
+        int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = jf.getSelectedFile();
-            openedFile = selectedFile;
+            File selectedFile = fileChooser.getSelectedFile();
             System.out.println(selectedFile.getAbsolutePath());
             int counter = DataManager.load(selectedFile);
 
@@ -109,13 +108,30 @@ public class GraphicInterface {
     }
 
     private static void saveFile(){
+
     }
 
     private static void saveFileAs() {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");          //accepting text files only
+        fileChooser.setFileFilter(filter);
+        fileChooser.setDialogTitle("Specify a file to save");
+        int userSelection = fileChooser.showSaveDialog(null);
 
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            if(!fileToSave.getAbsolutePath().endsWith(".txt"))
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");
+            selectedFile = fileToSave;
+            if(DataManager.save(fileToSave)){
+                JOptionPane.showMessageDialog(null, "successfully saved data to " + selectedFile.getAbsolutePath());
+            }
+            else
+                JOptionPane.showMessageDialog(null, "Save failed...");
+        }
     }
 
-    private static void updateTabe(){
-        //todo update JTable
+    public static AccountTableModel getModel() {
+        return model;
     }
 }

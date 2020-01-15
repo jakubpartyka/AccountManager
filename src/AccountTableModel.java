@@ -1,14 +1,14 @@
 import javax.swing.table.AbstractTableModel;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountTableModel extends AbstractTableModel {
     private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name"};
     private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class};
-    private List<Account> accounts;
+    private List<Account> accounts = new ArrayList<>();
 
     AccountTableModel(){
-        accounts = Collections.singletonList(new Account(" ", " ", " ", " ", " "));
+        accounts.add(new Account(" ", " ", " ", " ", " "));
     }
 
     AccountTableModel(List<Account> accounts){
@@ -63,7 +63,7 @@ public class AccountTableModel extends AbstractTableModel {
             case 3 : row.setEmailPassword(input); return;
             case 4 : row.setId(input); return;
             case 5 : row.setDateOfBirth(input); return;
-            case 6 : row.setName(input); return;
+            case 6 : row.setName(input);
         }
     }
 
@@ -72,7 +72,16 @@ public class AccountTableModel extends AbstractTableModel {
         return columnIndex == 3;
     }
 
-    public void setAccounts(List<Account> accounts) {
+    void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+
+    List<Account> getAccounts() {
+        return accounts;
+    }
+
+    void removeRow(int i) {
+        accounts.remove(i);
+        this.fireTableDataChanged();
     }
 }
