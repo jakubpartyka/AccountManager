@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.io.File;
 
@@ -108,7 +109,10 @@ public class GraphicInterface {
     }
 
     private static void saveFile(){
-
+        if(selectedFile == null)
+            saveFileAs();
+        DataManager.save(selectedFile);
+        JOptionPane.showMessageDialog(null, "Data saved to " + selectedFile.getAbsolutePath());
     }
 
     private static void saveFileAs() {
@@ -131,7 +135,7 @@ public class GraphicInterface {
         }
     }
 
-    public static AccountTableModel getModel() {
+    static AccountTableModel getModel() {
         return model;
     }
 }
