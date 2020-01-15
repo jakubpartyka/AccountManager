@@ -1,19 +1,21 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 public class GraphicInterface {
     private static File openedFile;
+    private static JTable table;
+    private static AccountTableModel model;
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
         //Creating the Frame
         JFrame frame = new JFrame("Facebook Account Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
-        frame.setLocation(400,200);
+        frame.setSize(800, 500);
+        frame.setLocation(300,200);
 
         //Creating the MenuBar and adding components
         JMenuBar mb = new JMenuBar();
@@ -25,7 +27,7 @@ public class GraphicInterface {
         //defining items for Manager tab
         JMenuItem m11 = new JMenuItem("Test accounts");
         JMenuItem m12 = new JMenuItem("Change Passwords");
-        JMenuItem m13 = new JMenuItem("Option 3");
+        JMenuItem m13 = new JMenuItem("Discover names");
         //todo add action listeners for this tab
 
         //defining items for file tab
@@ -60,14 +62,17 @@ public class GraphicInterface {
         panel.add(reset);
 
         // Text Area at the Center
-        JTextArea ta = new JTextArea();
+        model = new AccountTableModel();
+        JTable table = new JTable(model);
+        JScrollPane pane = new JScrollPane(table);
 
         //Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.getContentPane().add(BorderLayout.NORTH, mb);
-        frame.getContentPane().add(BorderLayout.CENTER, ta);
+        frame.getContentPane().add(BorderLayout.CENTER, pane);
         frame.setVisible(true);
 
+        Thread.sleep(3000);
     }
 
     private static void loadFile(){
@@ -82,21 +87,35 @@ public class GraphicInterface {
             System.out.println(selectedFile.getAbsolutePath());
             int counter = DataManager.load(selectedFile);
 
+            model.setAccounts(DataManager.getAccounts());
+            model.fireTableDataChanged();
             //showing message to user
             if(counter == 0)
                 JOptionPane.showMessageDialog(null, "No accounts could be loaded from file");
             else if(counter == -1)
                 JOptionPane.showMessageDialog(null, "Error loading file");
             else {
-                JOptionPane.showMessageDialog(null, counter + " accounts loaded successfully");
+                Thread thread = new Thread(() -> JOptionPane.showMessageDialog(null, counter + " accounts loaded successfully"));
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                thread.start();
             }
         }
         else
             System.out.println("something went wrong");
     }
 
-    static void saveFile(){}
+    private static void saveFile(){
+    }
 
     private static void saveFileAs() {
+
+    }
+
+    private static void updateTabe(){
+        //todo update JTable
     }
 }

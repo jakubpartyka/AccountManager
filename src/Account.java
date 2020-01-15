@@ -1,13 +1,7 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 class Account {
     //personal data
     private String name;
-    private String lastName;
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     //login data
     private String id;
@@ -25,18 +19,68 @@ class Account {
         this.login = login;
         this.password = password;
         this.email = login;
-        this.email = emailPassword;
+        this.emailPassword = emailPassword;
         this.id = id;
-
-        SimpleDateFormat sdf = new SimpleDateFormat("DD.MM.YYYY");
-        try {
-            this.dateOfBirth = sdf.parse(date);
-        } catch (ParseException e) {
-            this.dateOfBirth = null;
-        }
+        this.dateOfBirth = date;
     }
 
     String getId() {
         return id;
+    }
+
+    String getLogin() {
+        return login;
+    }
+
+    String getPassword() {
+        return password;
+    }
+
+    String getName() {
+        if(name == null)
+            return "not found ";
+        else
+            return name;
+    }
+
+    String  getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    String getEmail() {
+        return email;
+    }
+
+    String getEmailPassword() {
+        return emailPassword;
+    }
+
+    void setId(String id) {
+        this.id = id;
+    }
+
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
+
+    void setEmailPassword(String emailPassword) {
+        this.emailPassword = emailPassword;
+    }
+
+    void setLogin(String login) {
+        this.login = login;
+    }
+
+    void setPassword(String password) {
+        this.password = password;
     }
 }
