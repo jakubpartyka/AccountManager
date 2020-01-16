@@ -3,16 +3,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountTableModel extends AbstractTableModel {
-    private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name"};
-    private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class};
+    private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","last status date"};
+    private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class};
     private List<Account> accounts = new ArrayList<>();
 
     AccountTableModel(){
-        accounts.add(new Account(" ", " ", " ", " ", " "));
-    }
-
-    AccountTableModel(List<Account> accounts){
-        this.accounts = accounts;
+        accounts.add(new Account(" ", " ", " ", " ", " ", " ", " ", "data not loaded"));
     }
 
     @Override
@@ -48,6 +44,8 @@ public class AccountTableModel extends AbstractTableModel {
             case 4 : return row.getId();
             case 5 : return row.getDateOfBirth();
             case 6 : return row.getName();
+            case 7 : return row.getStatus();
+            case 8 : return row.getStatusDate();
         }
         return null;
     }
@@ -63,17 +61,19 @@ public class AccountTableModel extends AbstractTableModel {
             case 3 : row.setEmailPassword(input); return;
             case 4 : row.setId(input); return;
             case 5 : row.setDateOfBirth(input); return;
-            case 6 : row.setName(input);
+            case 6 : row.setName(input); return;
+            case 7 : row.setStatus(input); return;
+            case 8 : row.setStatusDate(input);
         }
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 3;
+        return (columnIndex == 3 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8);
     }
 
-    void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
+    void addAccounts(List<Account> accounts){
+        this.accounts.addAll(accounts);
     }
 
     List<Account> getAccounts() {
@@ -84,4 +84,15 @@ public class AccountTableModel extends AbstractTableModel {
         accounts.remove(i);
         this.fireTableDataChanged();
     }
+
+    void removeRow(Account account) {
+        accounts.remove(account);
+        this.fireTableDataChanged();
+    }
+
+    void clearAccounts(){
+        this.accounts.clear();
+    }
+
+
 }

@@ -1,4 +1,12 @@
 class Account {
+    //final fields
+    final String UNKNOWN = "unknown";
+    final String NONE = "none";
+    final String STATUS_OPERATIONAL = "operational";
+    final String STATUS_INACTIVE = "operational";
+    final String STATUS_ACTION_NEEDED = "action required";
+    final String STATUS_NOT_FOUND = "not found";
+
     //personal data
     private String name;
     private String dateOfBirth;
@@ -9,11 +17,8 @@ class Account {
     private String password;
     private String email;
     private String emailPassword;
-
-    Account(String login, String password){
-        this.login = login;
-        this.password = password;
-    }
+    private String status;
+    private String statusDate;
 
     Account(String login, String password,String emailPassword, String dateOfBirth, String id){
         this.login = login;
@@ -22,6 +27,33 @@ class Account {
         this.emailPassword = emailPassword;
         this.id = id;
         this.dateOfBirth = dateOfBirth;
+        this.name = UNKNOWN;
+        this.status = UNKNOWN;
+        this.statusDate = NONE;
+    }
+
+    Account(String login, String password, String emailPassword, String dateOfBirth, String id, String name) {
+        this.login = login;
+        this.password = password;
+        this.email = login;
+        this.emailPassword = emailPassword;
+        this.id = id;
+        this.dateOfBirth = dateOfBirth;
+        this.name = name;
+        this.status = UNKNOWN;
+        this.statusDate = NONE;
+    }
+
+    Account(String login, String password, String emailPassword, String dateOfBirth, String id, String name, String status, String statusTime) {
+        this.login = login;
+        this.password = password;
+        this.email = login;
+        this.emailPassword = emailPassword;
+        this.id = id;
+        this.dateOfBirth = dateOfBirth;
+        this.name = name;
+        this.status = status;
+        this.statusDate = statusTime;
     }
 
     String getId() {
@@ -86,10 +118,33 @@ class Account {
 
     @Override
     public String toString() {
-        return login + ':' + password + ':' + emailPassword + ':' +dateOfBirth + ':' + id;
+        return login + ':' + password + ':' + emailPassword + ':' +dateOfBirth + ':' + id + ':' + name + ':' + status + ':' + statusDate;
     }
 
     boolean isEmpty() {
         return login.equals(" ") && id.equals(" ") && password.equals(" ");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!obj.getClass().equals(this.getClass()))
+            return false;
+        return this.id.equals(((Account) obj).getId());
+    }
+
+    void setStatus(String status) {
+        this.status = status;
+    }
+
+    void setStatusDate(String statusDate) {
+        this.statusDate = statusDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getStatusDate() {
+        return statusDate;
     }
 }
