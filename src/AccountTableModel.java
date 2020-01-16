@@ -115,18 +115,29 @@ public class AccountTableModel extends AbstractTableModel {
 
     void clearSearch(){
         //clear search results
-        List<Account> tmp = temporaryAccountList;
-        temporaryAccountList = accounts;
-        accounts = tmp;
-        fireTableDataChanged();
+        if(temporaryAccountList.size() > accounts.size()) {
+            List<Account> tmp = temporaryAccountList;
+            temporaryAccountList = accounts;
+            accounts = tmp;
+            fireTableDataChanged();
+        }
     }
 
     void searchResultsFor(String text) {
         //apply search filter
+        if(temporaryAccountList.size() > accounts.size()) {
+            List<Account> tmp = temporaryAccountList;
+            temporaryAccountList = accounts;
+            accounts = tmp;
+        }
+
+        //resetting accounts if some search was done before without clearing
+
+        //applying new search filter
         temporaryAccountList = accounts;        //saving main list to backup
         List<Account> tmp = new ArrayList<>();
         for (Account account : accounts){
-            List<String> fields = Arrays.asList(account.toString().split(":"));
+            String[] fields = account.toString().split(":");
             for (String field : fields){
                 if (field.contains(text))
                     if(!tmp.contains(account))

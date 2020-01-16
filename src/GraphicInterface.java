@@ -12,7 +12,7 @@ public class GraphicInterface {
     private static AccountTableModel model;
     //todo boolean changes saved
 
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) {
         //Creating the Frame
         JFrame frame = new JFrame("Facebook Account Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -81,7 +81,7 @@ public class GraphicInterface {
             //simple key listener that allows to apply search filter with enter and remove it with esc
             @Override
             public void keyTyped(KeyEvent e) {
-                if(e.getExtendedKeyCode() == 10 && !searchFilterOn.get() && tf.getText().length() > 0) {
+                if(e.getExtendedKeyCode() == 10 && tf.getText().length() > 0) {
                     model.searchResultsFor(tf.getText());
                     search.setText("reset");
                     searchFilterOn.set(true);
@@ -211,6 +211,4 @@ public class GraphicInterface {
     static AccountTableModel getModel() {
         return model;
     }
-
-    //todo delete duplicates
 }
