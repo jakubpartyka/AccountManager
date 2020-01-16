@@ -1,3 +1,4 @@
+//this class represents main GUI - it implements all methods that are being used by main gui elements.
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -8,7 +9,7 @@ import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GraphicInterface {
-    private static File selectedFile;
+    private static File saveFile;               //this is the file to which data will be saved on cntr + s / save
     private static AccountTableModel model;
     //todo boolean changes saved
 
@@ -148,15 +149,16 @@ public class GraphicInterface {
         //this method loads file chosen by user and then loads it with DataManager
         JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt files only", "txt", "text");          //accepting text files only
+        fileChooser.setDialogTitle("Choose a file to open");
         fileChooser.setFileFilter(filter);
         int returnValue = fileChooser.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            System.out.println(selectedFile.getAbsolutePath());
 
-            int counter = DataManager.load(selectedFile);
-            model.addAccounts(DataManager.getAccountsToAdd());
-            model.fireTableDataChanged();
+            int counter = DataManager.load(selectedFile);           //loading data to DataManager and getting status integer
+            model.addAccounts(DataManager.getAccountsToAdd());      //updating table data
+            model.fireTableDataChanged();                           //re-rendering table
+
             //showing message to user
             if(counter == 0)
                 JOptionPane.showMessageDialog(null, "No accounts were loaded from file");
@@ -175,13 +177,14 @@ public class GraphicInterface {
             }
         }
         else
-            System.out.println("something went wrong");
+            System.out.println("file choosing cancelled");          //if no file was chosen (eg. fileChooser was closed) operation is cancelled.
     }
 
     private static void saveFile(){
+        //this method saves current model contents to specified text file. If save file is not specified saveFileAs() method will be invoked
         try {
-            if(DataManager.save(selectedFile))
-                JOptionPane.showMessageDialog(null, "Data saved to " + selectedFile);
+            if(DataManager.save(saveFile))
+                JOptionPane.showMessageDialog(null, "Data saved to " + saveFile);
         }
         catch (NullPointerException e) {
             saveFileAs();
@@ -193,18 +196,20 @@ public class GraphicInterface {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");          //accepting text files only
         fileChooser.setFileFilter(filter);
         fileChooser.setDialogTitle("Specify a file to save");
-        int userSelection = fileChooser.showSaveDialog(null);
+        int selectedFile = fileChooser.showSaveDialog(null);
 
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
+        if (selectedFile == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
             if(!fileToSave.getAbsolutePath().endsWith(".txt"))
-                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");
-            selectedFile = fileToSave;
-            if(DataManager.save(fileToSave)){
-                JOptionPane.showMessageDialog(null, "successfully saved data to " + selectedFile.getAbsolutePath());
-            }
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");   //making sure .txt file will be used
+            saveFile = fileToSave;                                                        //setting default save file
+            if(DataManager.save(fileToSave))
+                JOptionPane.showMessageDialog(null, "successfully saved data to " + saveFile.getAbsolutePath());
             else
                 JOptionPane.showMessageDialog(null, "Save failed...");
+        }
+        else {
+            System.out.println("file saving was cancelled");        //if file saving fails (eg. file chooser was closed) operation is cancelled
         }
     }
 

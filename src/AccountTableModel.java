@@ -18,7 +18,8 @@ public class AccountTableModel extends AbstractTableModel {
         //method that handles user deletion with "delete" button
         if(selectedRows.length == 0)
             return;
-        int n = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + selectedRows.length + " rows?","Confirm deletion", JOptionPane.YES_NO_OPTION);
+        String message = selectedRows.length > 1 ? "Are you sure you want to delete " + selectedRows.length + " rows?" : "Are you sure you want to delete this row?";
+        int n = JOptionPane.showConfirmDialog(null, message,"Confirm deletion", JOptionPane.YES_NO_OPTION);
         if(n == 0) {
             List<Account> toDelete = new ArrayList<>();
             for (int selectedRow : selectedRows) {
@@ -26,7 +27,8 @@ public class AccountTableModel extends AbstractTableModel {
             }
             accounts.removeAll(toDelete);
             fireTableDataChanged();
-            JOptionPane.showMessageDialog(null, toDelete.size() + " rows deleted");
+            String deletedMessage = selectedRows.length > 1 ? toDelete.size() + " rows deleted" : "1 row deleted";
+            JOptionPane.showMessageDialog(null, deletedMessage);
         }
     }
 
@@ -125,13 +127,13 @@ public class AccountTableModel extends AbstractTableModel {
 
     void searchResultsFor(String text) {
         //apply search filter
+
+        //resetting accounts if some search was done before without clearing
         if(temporaryAccountList.size() > accounts.size()) {
             List<Account> tmp = temporaryAccountList;
             temporaryAccountList = accounts;
             accounts = tmp;
         }
-
-        //resetting accounts if some search was done before without clearing
 
         //applying new search filter
         temporaryAccountList = accounts;        //saving main list to backup
@@ -146,7 +148,5 @@ public class AccountTableModel extends AbstractTableModel {
         }
         accounts = tmp;
         fireTableDataChanged();
-
-
     }
 }

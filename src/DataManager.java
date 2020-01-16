@@ -1,3 +1,5 @@
+//this class handles reading/writing data from/to external .txt file
+
 import javax.swing.*;
 import java.io.*;
 import java.util.*;
@@ -6,6 +8,7 @@ class DataManager {
     private static List<Account> accountsToAdd = new ArrayList<>();                      //list for keeping accountsToAdd. Identified by unique profile id
 
     static int load(File selectedFile){
+        //load data from file
         accountsToAdd.clear();          //clearing temporary arrayList
         try {
             try {
@@ -104,6 +107,9 @@ class DataManager {
     }
 
     static boolean save(File fileToSave) {
+        //save data to file
+
+        GraphicInterface.getModel().clearSearch();          //resetting main model so all data are saved to file
         try {
             FileWriter fw = new FileWriter(fileToSave);
             for (Account account : accountsToAdd) {

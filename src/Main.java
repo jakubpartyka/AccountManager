@@ -5,3 +5,7 @@ public class Main {
 
     }
 }
+
+
+//things to do
+//todo save selection only
