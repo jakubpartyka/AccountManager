@@ -1,7 +1,6 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.io.File;
 
@@ -85,19 +84,21 @@ public class GraphicInterface {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             System.out.println(selectedFile.getAbsolutePath());
-            int counter = DataManager.load(selectedFile);
 
-            model.setAccounts(DataManager.getAccounts());
+            int counter = DataManager.load(selectedFile);
+            model.addAccounts(DataManager.getAccountsToAdd());
             model.fireTableDataChanged();
             //showing message to user
             if(counter == 0)
-                JOptionPane.showMessageDialog(null, "No accounts could be loaded from file");
+                JOptionPane.showMessageDialog(null, "No accounts were loaded from file");
             else if(counter == -1)
-                JOptionPane.showMessageDialog(null, "Error loading file");
+                JOptionPane.showMessageDialog(null, "No records were loaded from file");
+            else if(counter == -2)
+                JOptionPane.showMessageDialog(null, "Loading data from file canceled.");
             else {
                 Thread thread = new Thread(() -> JOptionPane.showMessageDialog(null, counter + " accounts loaded successfully"));
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(200);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -109,10 +110,13 @@ public class GraphicInterface {
     }
 
     private static void saveFile(){
-        if(selectedFile == null)
+        try {
+            if(DataManager.save(selectedFile))
+                JOptionPane.showMessageDialog(null, "Data saved to " + selectedFile);
+        }
+        catch (NullPointerException e) {
             saveFileAs();
-        DataManager.save(selectedFile);
-        JOptionPane.showMessageDialog(null, "Data saved to " + selectedFile.getAbsolutePath());
+        }
     }
 
     private static void saveFileAs() {
@@ -138,4 +142,18 @@ public class GraphicInterface {
     static AccountTableModel getModel() {
         return model;
     }
+
+    static boolean askUser(String message){
+        int n = JOptionPane.showConfirmDialog(null, message,"Input required",JOptionPane.YES_NO_OPTION);
+        switch (n) {
+            case 0:
+                return true;
+            case 1:
+                return false;
+            default:
+                return false;
+        }
+    }
+
+    //todo delete duplicates
 }
