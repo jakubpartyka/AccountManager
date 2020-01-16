@@ -141,11 +141,19 @@ class Account {
         this.statusDate = statusDate;
     }
 
+<<<<<<< HEAD
     String getStatus() {
         return status;
     }
 
     String getStatusDate() {
+=======
+    public String getStatus() {
+        return status;
+    }
+
+    public String getStatusDate() {
+>>>>>>> 651281ce2161adb3ba4df0359c53c259e04d652a
         return statusDate;
     }
 }

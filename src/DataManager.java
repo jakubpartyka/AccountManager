@@ -27,11 +27,16 @@ class DataManager {
                     accountsToAdd.add(account);
                 }
                 else if (loaded.size() == 6){
+<<<<<<< HEAD
                     //name given in file, but status and status date not given
+=======
+                    //name given in file
+>>>>>>> 651281ce2161adb3ba4df0359c53c259e04d652a
                     Account account = new Account(loaded.get(0), loaded.get(1), loaded.get(2), loaded.get(3), loaded.get(4), loaded.get(5));
                     accountsToAdd.add(account);
                 }
                 else if (loaded.size() == 8){
+<<<<<<< HEAD
                     //all data given in file (including name, status and status date)
                     Account account = new Account(loaded.get(0), loaded.get(1), loaded.get(2), loaded.get(3), loaded.get(4), loaded.get(5), loaded.get(6), loaded.get(7));
                     accountsToAdd.add(account);
@@ -44,6 +49,21 @@ class DataManager {
                 //if table has any rows, duplicates check will be performed
                 return handleDuplicates();  //return amount of affected rows
             }
+=======
+                    //name given in file
+                    Account account = new Account(loaded.get(0), loaded.get(1), loaded.get(2), loaded.get(3), loaded.get(4), loaded.get(5), loaded.get(6), loaded.get(7));
+                    accountsToAdd.add(account);
+                }
+
+                line = fileReader.readLine();
+            }
+            int counter;
+
+            if(!GraphicInterface.getModel().getAccounts().isEmpty()){
+                //if table has any rows, duplicates check will be performed
+                return handleDuplicates();  //return amount of affected rows
+            }
+>>>>>>> 651281ce2161adb3ba4df0359c53c259e04d652a
             counter = accountsToAdd.size();
             return counter;                 //id no duplicates were found, amount of added rows will be returned
         }
