@@ -1,14 +1,33 @@
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AccountTableModel extends AbstractTableModel {
     private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","last status date"};
     private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class};
     private List<Account> accounts = new ArrayList<>();
+    private List<Account> temporaryAccountList = new ArrayList<>();
 
     AccountTableModel(){
         accounts.add(new Account(" ", " ", " ", " ", " ", " ", " ", "data not loaded"));
+    }
+
+    void delete(int[] selectedRows) {
+        //method that handles user deletion with "delete" button
+        if(selectedRows.length == 0)
+            return;
+        int n = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + selectedRows.length + " rows?","Confirm deletion", JOptionPane.YES_NO_OPTION);
+        if(n == 0) {
+            List<Account> toDelete = new ArrayList<>();
+            for (int selectedRow : selectedRows) {
+                toDelete.add(accounts.get(selectedRow));
+            }
+            accounts.removeAll(toDelete);
+            fireTableDataChanged();
+            JOptionPane.showMessageDialog(null, toDelete.size() + " rows deleted");
+        }
     }
 
     @Override
@@ -94,5 +113,29 @@ public class AccountTableModel extends AbstractTableModel {
         this.accounts.clear();
     }
 
+    void clearSearch(){
+        //clear search results
+        List<Account> tmp = temporaryAccountList;
+        temporaryAccountList = accounts;
+        accounts = tmp;
+        fireTableDataChanged();
+    }
 
+    void searchResultsFor(String text) {
+        //apply search filter
+        temporaryAccountList = accounts;        //saving main list to backup
+        List<Account> tmp = new ArrayList<>();
+        for (Account account : accounts){
+            List<String> fields = Arrays.asList(account.toString().split(":"));
+            for (String field : fields){
+                if (field.contains(text))
+                    if(!tmp.contains(account))
+                        tmp.add(account);
+            }
+        }
+        accounts = tmp;
+        fireTableDataChanged();
+
+
+    }
 }

@@ -2,10 +2,10 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GraphicInterface {
     private static File selectedFile;
@@ -64,20 +64,72 @@ public class GraphicInterface {
 
         //Creating the panel at bottom and adding components
         JPanel panel = new JPanel(); // the panel is not visible in output
-        JLabel label = new JLabel("Enter Text");
+        JLabel label = new JLabel("Search for");
         JTextField tf = new JTextField(10); // accepts upto 10 characters
-        JButton send = new JButton("Send");
-        JButton reset = new JButton("Reset");
+        JButton search = new JButton("Search");
+        search.setPreferredSize(new Dimension(80,30));
+        JButton delete = new JButton("Delete");
+        JButton selectAll = new JButton("Select All");
+        JButton deselect = new JButton("Deselect");
+
+        //search boolean
+        AtomicBoolean searchFilterOn = new AtomicBoolean(false);
 
         panel.add(label); // Components Added using Flow Layout
         panel.add(tf);
-        panel.add(send);
-        panel.add(reset);
+        tf.addKeyListener(new KeyListener() {
+            //simple key listener that allows to apply search filter with enter and remove it with esc
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if(e.getExtendedKeyCode() == 10 && !searchFilterOn.get() && tf.getText().length() > 0) {
+                    model.searchResultsFor(tf.getText());
+                    search.setText("reset");
+                    searchFilterOn.set(true);
+                }
+                if(e.getExtendedKeyCode() == 27 && searchFilterOn.get()){
+                    model.clearSearch();
+                    tf.setText("");
+                    search.setText("Search");
+                    searchFilterOn.set(false);
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {}
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
+        panel.add(search);
+        panel.add(delete);
+        panel.add(selectAll);
+        panel.add(deselect);
 
         // Text Area at the Center
         model = new AccountTableModel();
         JTable table = new JTable(model);
         JScrollPane pane = new JScrollPane(table);
+
+        //action listener for buttons
+        delete.addActionListener(l -> model.delete(table.getSelectedRows()));
+        deselect.addActionListener(l -> table.clearSelection());
+        selectAll.addActionListener(l -> table.selectAll());
+        search.addActionListener(l -> {
+            //action listener that applies search filter to result list. See search() in AccountTableModel.
+            if(!searchFilterOn.get() && tf.getText().length() > 0) {
+                //apply search filter
+                model.searchResultsFor(tf.getText());
+                search.setText("reset");
+                searchFilterOn.set(true);
+            }
+            else {
+                //clear search
+                model.clearSearch();
+                tf.setText("");
+                search.setText("Search");
+                searchFilterOn.set(false);
+            }
+        });
 
         //Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
@@ -158,18 +210,6 @@ public class GraphicInterface {
 
     static AccountTableModel getModel() {
         return model;
-    }
-
-    static boolean askUser(String message){
-        int n = JOptionPane.showConfirmDialog(null, message,"Input required",JOptionPane.YES_NO_OPTION);
-        switch (n) {
-            case 0:
-                return true;
-            case 1:
-                return false;
-            default:
-                return false;
-        }
     }
 
     //todo delete duplicates
