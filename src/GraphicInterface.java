@@ -2,11 +2,13 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 public class GraphicInterface {
     private static File selectedFile;
-    private static JTable table;
     private static AccountTableModel model;
     //todo boolean changes saved
 
@@ -14,8 +16,8 @@ public class GraphicInterface {
         //Creating the Frame
         JFrame frame = new JFrame("Facebook Account Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 500);
-        frame.setLocation(300,200);
+        frame.setSize(900, 500);
+        frame.setLocation(250,150);
 
         //Creating the MenuBar and adding components
         JMenuBar mb = new JMenuBar();
@@ -28,21 +30,32 @@ public class GraphicInterface {
         JMenuItem m11 = new JMenuItem("Test accounts");
         JMenuItem m12 = new JMenuItem("Change Passwords");
         JMenuItem m13 = new JMenuItem("Discover names");
+        JMenuItem m14 = new JMenuItem("Exit");
+        m14.addActionListener(l -> exit());
+        m14.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         //todo add action listeners for this tab
 
         //defining items for file tab
         JMenuItem m21 = new JMenuItem("Load data");
         m21.addActionListener(a -> loadFile());
+        m21.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         JMenuItem m22 = new JMenuItem("Save data");
         m22.addActionListener(a -> saveFile());
+        m22.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         JMenuItem m23 = new JMenuItem("Save data as...");
         m23.addActionListener(a -> saveFileAs());
+
 
 
         //adding menu items to tabs
         managerTab.add(m11);
         managerTab.add(m12);
         managerTab.add(m13);
+        managerTab.addSeparator();
+        managerTab.add(m14);
 
         fileTab.add(m21);
         fileTab.add(m22);
@@ -71,8 +84,12 @@ public class GraphicInterface {
         frame.getContentPane().add(BorderLayout.NORTH, mb);
         frame.getContentPane().add(BorderLayout.CENTER, pane);
         frame.setVisible(true);
+    }
 
-        Thread.sleep(3000);
+    private static void exit() {
+        //this method checks if current file was saved before exiting
+        //todo file save check
+        System.exit(0);
     }
 
     private static void loadFile(){
