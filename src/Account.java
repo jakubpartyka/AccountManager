@@ -1,12 +1,13 @@
 @SuppressWarnings({"WeakerAccess", "unused"})
 class Account {
     //final fields
-    final String UNKNOWN = "unknown";
-    final String NONE = "none";
-    final String STATUS_OPERATIONAL = "operational";
-    final String STATUS_INACTIVE = "operational";
-    final String STATUS_ACTION_NEEDED = "action required";
-    final String STATUS_NOT_FOUND = "not found";
+    final static String UNKNOWN = "unknown";
+    final static String NONE = "none";
+    final static String STATUS_OPERATIONAL = "operational";
+    final static String ONLINE = "online";
+    final static String STATUS_INACTIVE = "inactive";
+    final static String STATUS_ACTION_NEEDED = "action required";
+    final static String STATUS_NOT_FOUND = "not found";
 
     //personal data
     private String name;
