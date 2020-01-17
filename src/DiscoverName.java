@@ -43,9 +43,10 @@ public class DiscoverName extends WebTask {
             driver.get(profilePage);                                //navigating to target's profile page
             try{
                 WebElement nameTag = driver.findElementByXPath("//*[@class='_2nlw _2nlv']");
-                currentAccount.setName(nameTag.getText());      //setting name to discovered value
-                currentAccount.setStatus(Account.ONLINE);       //setting account status
-                successful.add(currentAccount);                //adding to successful list for further access
+                currentAccount.setName(nameTag.getText());                      //setting name to discovered value
+                currentAccount.setStatus(Account.ONLINE);                       //setting account status
+                successful.add(currentAccount);                                 //adding to successful list for further access
+                GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
             }
             catch (NoSuchElementException e){
                 unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)

@@ -278,10 +278,12 @@ public class GraphicInterface {
 
     private static void runWebTask(int [] indexList, String taskName){
         List<Account> accountsForTask = model.getAccountsByIndexes(indexList);
+        Thread task;
 
         switch (taskName) {
             case "DiscoverName" :
-                WebTask task = new DiscoverName(accountsForTask);
+                WebTask discoverName = new DiscoverName(accountsForTask);
+                task = new Thread(discoverName);
                 task.run();
                 break;
             default :
