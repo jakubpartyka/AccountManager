@@ -8,7 +8,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -278,13 +277,12 @@ public class GraphicInterface {
 
     private static void runWebTask(int [] indexList, String taskName){
         List<Account> accountsForTask = model.getAccountsByIndexes(indexList);
-        Thread task;
 
         switch (taskName) {
             case "DiscoverName" :
                 WebTask discoverName = new DiscoverName(accountsForTask);
-                task = new Thread(discoverName);
-                task.run();
+                Thread thread = new Thread(discoverName);
+                thread.start();
                 break;
             default :
                 try {

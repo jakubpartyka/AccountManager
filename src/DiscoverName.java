@@ -40,7 +40,12 @@ public class DiscoverName extends WebTask {
 
         for (Account currentAccount : operatingAccounts) {
             String profilePage = "https://www.facebook.com/" + currentAccount.getId();
-            driver.get(profilePage);                                //navigating to target's profile page
+//            driver.get(profilePage);                                //navigating to target's profile page
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             try{
                 WebElement nameTag = driver.findElementByXPath("//*[@class='_2nlw _2nlv']");
                 currentAccount.setName(nameTag.getText());                      //setting name to discovered value
@@ -50,11 +55,16 @@ public class DiscoverName extends WebTask {
             }
             catch (NoSuchElementException e){
                 unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)
+                currentAccount.setStatus(Account.STATUS_ACTION_NEEDED);
+                GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
             }
         }
         if(unsuccessful.size() > 0){
-            JOptionPane.showMessageDialog(null, "Name discovery operation was unsuccessful for following accounts: " + unsuccessful.toString());
-            unsuccessful.forEach(e -> e.setStatus(Account.STATUS_ACTION_NEEDED));
+            StringBuilder report = new StringBuilder();
+            for (Account account : unsuccessful) {
+                report.append(account.getId()).append("\n");
+            }
+            JOptionPane.showMessageDialog(null, "Name discovery operation was unsuccessful for following accounts:\n" + report.toString());
         }
     }
 
