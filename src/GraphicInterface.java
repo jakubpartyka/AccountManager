@@ -5,15 +5,20 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GraphicInterface {
     private static File saveFile;               //this is the file to which data will be saved on cntr + s / save
     private static AccountTableModel model;
+    private static JLabel selectionLabel;
+    private static JTable table;
     //todo boolean changes saved
 
     public static void main(String args[]) {
+
         //Creating the Frame
         JFrame frame = new JFrame("Facebook Account Manager");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,7 +40,6 @@ public class GraphicInterface {
         m14.addActionListener(l -> exit());
         m14.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        //todo add action listeners for this tab
 
         //defining items for file tab
         JMenuItem m21 = new JMenuItem("Load data");
@@ -48,8 +52,6 @@ public class GraphicInterface {
                 KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         JMenuItem m23 = new JMenuItem("Save data as...");
         m23.addActionListener(a -> saveFileAs());
-
-
 
         //adding menu items to tabs
         managerTab.add(m11);
@@ -66,30 +68,35 @@ public class GraphicInterface {
         //Creating the panel at bottom and adding components
         JPanel panel = new JPanel(); // the panel is not visible in output
         JLabel label = new JLabel("Search for");
-        JTextField tf = new JTextField(10); // accepts upto 10 characters
+        JTextField searchBox = new JTextField(10); // accepts upto 10 characters
         JButton search = new JButton("Search");
         search.setPreferredSize(new Dimension(80,30));
         JButton delete = new JButton("Delete");
         JButton selectAll = new JButton("Select All");
-        JButton deselect = new JButton("Deselect");
+        JButton selectNone = new JButton("Select None");
+
+        //status label
+        selectionLabel = new JLabel("none selected");
+        selectionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
 
         //search boolean
         AtomicBoolean searchFilterOn = new AtomicBoolean(false);
 
         panel.add(label); // Components Added using Flow Layout
-        panel.add(tf);
-        tf.addKeyListener(new KeyListener() {
+        panel.add(searchBox);
+        searchBox.addKeyListener(new KeyListener() {
             //simple key listener that allows to apply search filter with enter and remove it with esc
             @Override
             public void keyTyped(KeyEvent e) {
-                if(e.getExtendedKeyCode() == 10 && tf.getText().length() > 0) {
-                    model.searchResultsFor(tf.getText());
+                if(e.getExtendedKeyCode() == 10 && searchBox.getText().length() > 0) {
+                    model.searchResultsFor(searchBox.getText());
                     search.setText("reset");
                     searchFilterOn.set(true);
                 }
                 if(e.getExtendedKeyCode() == 27 && searchFilterOn.get()){
                     model.clearSearch();
-                    tf.setText("");
+                    searchBox.setText("");
                     search.setText("Search");
                     searchFilterOn.set(false);
                 }
@@ -104,39 +111,94 @@ public class GraphicInterface {
         panel.add(search);
         panel.add(delete);
         panel.add(selectAll);
-        panel.add(deselect);
+        panel.add(selectNone);
+        panel.add(selectionLabel);
 
-        // Text Area at the Center
+        //JTable at the Center
         model = new AccountTableModel();
-        JTable table = new JTable(model);
+        table = new JTable(model);
         JScrollPane pane = new JScrollPane(table);
+        table.addMouseListener(new MouseAdapter() {
+            //mouse adapter to update "selection label" on every new selection
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                super.mouseReleased(e);
+                updateSelectionLabel();
+            }
+        });
+        table.addKeyListener(new KeyListener() {
+            //KeyListener that updates selection bar when ctrl+a or cmmd+a combination is pressed.
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getExtendedKeyCode() == 65)
+                    updateSelectionLabel();
+            }
+        });
+
+
 
         //action listener for buttons
-        delete.addActionListener(l -> model.delete(table.getSelectedRows()));
-        deselect.addActionListener(l -> table.clearSelection());
-        selectAll.addActionListener(l -> table.selectAll());
+        delete.addActionListener(l -> {
+            model.delete(table.getSelectedRows());
+            updateSelectionLabel();
+        });
+
+        selectNone.addActionListener(l -> {
+            table.clearSelection();
+            updateSelectionLabel();
+        });
+
+        selectAll.addActionListener(l -> {
+            table.selectAll();
+            updateSelectionLabel();
+        });
+
         search.addActionListener(l -> {
             //action listener that applies search filter to result list. See search() in AccountTableModel.
-            if(!searchFilterOn.get() && tf.getText().length() > 0) {
+            if(!searchFilterOn.get() && searchBox.getText().length() > 0) {
                 //apply search filter
-                model.searchResultsFor(tf.getText());
+                model.searchResultsFor(searchBox.getText());
                 search.setText("reset");
                 searchFilterOn.set(true);
             }
             else {
                 //clear search
                 model.clearSearch();
-                tf.setText("");
+                searchBox.setText("");
                 search.setText("Search");
                 searchFilterOn.set(false);
             }
         });
+
+
+        //accelerators for select all and select none
+//        //select all and select none accelerators
+//        JMenuItem selectAllMenu = new JMenuItem("all");
+//        selectAllMenu.addActionListener(e -> {
+//            table.selectAll();
+//            updateSelectionLabel();
+//        });
+//        selectAllMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+//        managerTab.add(selectAllMenu);
 
         //Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.getContentPane().add(BorderLayout.NORTH, mb);
         frame.getContentPane().add(BorderLayout.CENTER, pane);
         frame.setVisible(true);
+    }
+
+    static void updateSelectionLabel() {
+        selectionLabel.setText(table.getSelectedRows().length + " out of " + model.getTotalCount() + " selected");
     }
 
     private static void exit() {

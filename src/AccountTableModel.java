@@ -121,6 +121,7 @@ public class AccountTableModel extends AbstractTableModel {
             List<Account> tmp = temporaryAccountList;
             temporaryAccountList = accounts;
             accounts = tmp;
+            tmp.clear();
             fireTableDataChanged();
         }
     }
@@ -149,4 +150,18 @@ public class AccountTableModel extends AbstractTableModel {
         accounts = tmp;
         fireTableDataChanged();
     }
+
+    @Override
+    public void fireTableDataChanged() {
+        super.fireTableDataChanged();
+        GraphicInterface.updateSelectionLabel();
+    }
+
+    int getTotalCount(){
+        if (temporaryAccountList.size() > accounts.size())
+            return temporaryAccountList.size();
+        else
+            return accounts.size();
+    }
+
 }

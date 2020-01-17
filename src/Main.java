@@ -1,7 +1,7 @@
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
-	GraphicInterface.main(args);
+    public static void main(String[] args) {
+	    GraphicInterface.main(args);
 
     }
 }
@@ -9,3 +9,6 @@ public class Main {
 
 //things to do
 //todo save selection only
+//todo selection tab?
+//todo right bottom corner - x out of y displayed/selected
+//todo editing in search view
