@@ -8,6 +8,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GraphicInterface {
@@ -37,6 +39,12 @@ public class GraphicInterface {
         JMenuItem m12 = new JMenuItem("Change Passwords");
         JMenuItem m13 = new JMenuItem("Discover names");
         JMenuItem m14 = new JMenuItem("Exit");
+
+
+        //listeners for Manager Tab
+        m13.addActionListener(e -> runWebTask(table.getSelectedRows(),"DiscoverName"));
+
+        //quit listener and shortcut
         m14.addActionListener(l -> exit());
         m14.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -179,17 +187,6 @@ public class GraphicInterface {
             }
         });
 
-
-        //accelerators for select all and select none
-//        //select all and select none accelerators
-//        JMenuItem selectAllMenu = new JMenuItem("all");
-//        selectAllMenu.addActionListener(e -> {
-//            table.selectAll();
-//            updateSelectionLabel();
-//        });
-//        selectAllMenu.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-//        managerTab.add(selectAllMenu);
-
         //Adding Components to the frame.
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         frame.getContentPane().add(BorderLayout.NORTH, mb);
@@ -277,5 +274,22 @@ public class GraphicInterface {
 
     static AccountTableModel getModel() {
         return model;
+    }
+
+    private static void runWebTask(int [] indexList, String taskName){
+        List<Account> accountsForTask = model.getAccountsByIndexes(indexList);
+
+        switch (taskName) {
+            case "DiscoverName" :
+                WebTask task = new DiscoverName(accountsForTask);
+                task.run();
+                break;
+            default :
+                try {
+                    throw new Exception("No such operation defined");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
     }
 }

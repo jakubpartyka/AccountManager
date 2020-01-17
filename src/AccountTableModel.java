@@ -97,6 +97,14 @@ public class AccountTableModel extends AbstractTableModel {
         this.accounts.addAll(accounts);
     }
 
+    List<Account> getAccountsByIndexes(int [] indexes){
+        List<Account> toReturn = new ArrayList<>();
+        for (int index:indexes) {
+            toReturn.add(accounts.get(index));
+        }
+        return toReturn;
+    }
+
     List<Account> getAccounts() {
         return accounts;
     }

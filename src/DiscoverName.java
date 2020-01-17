@@ -12,6 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class DiscoverName extends WebTask {
     private boolean useIncognitoMode = true;
+    private boolean useHeadlessMode = true;
 
     DiscoverName(Account account) {
         super(account);
@@ -24,7 +25,7 @@ public class DiscoverName extends WebTask {
     @Override
     public void run() {
         //cleaning result lists (in case of re-running this runnable)
-        successfull.clear();
+        successful.clear();
         unsuccessful.clear();
 
         //setting up a web driver with popup blocking
@@ -32,6 +33,8 @@ public class DiscoverName extends WebTask {
         options.addArguments("--disable-popup-blocking");
         if(useIncognitoMode)
             options.addArguments("incognito");
+        if(useHeadlessMode)
+            options.addArguments("headless");
 
         ChromeDriver driver = new ChromeDriver(options);
 
@@ -42,7 +45,7 @@ public class DiscoverName extends WebTask {
                 WebElement nameTag = driver.findElementByXPath("//*[@class='_2nlw _2nlv']");
                 currentAccount.setName(nameTag.getText());      //setting name to discovered value
                 currentAccount.setStatus(Account.ONLINE);       //setting account status
-                successfull.add(currentAccount);                //adding to successful list for further access
+                successful.add(currentAccount);                //adding to successful list for further access
             }
             catch (NoSuchElementException e){
                 unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)
@@ -56,5 +59,9 @@ public class DiscoverName extends WebTask {
 
     public void setUseIncognitoMode(boolean useIncognitoMode) {
         this.useIncognitoMode = useIncognitoMode;
+    }
+
+    public void setUseHeadlessMode(boolean useHeadlessMode) {
+        this.useHeadlessMode = useHeadlessMode;
     }
 }
