@@ -63,6 +63,18 @@ class Account {
         this.statusDate = statusTime;
     }
 
+    Account(String login, String password, String email, String emailPassword, String dateOfBirth, String id, String name, String status, String statusTime) {
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.emailPassword = emailPassword;
+        this.id = id;
+        this.dateOfBirth = dateOfBirth;
+        this.name = name;
+        this.status = status;
+        this.statusDate = statusTime;
+    }
+
     String getId() {
         return id;
     }

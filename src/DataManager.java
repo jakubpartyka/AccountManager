@@ -13,11 +13,6 @@ class DataManager {
         //load data from file
         accountsToAdd.clear();          //clearing temporary arrayList
         try {
-            try {
-                if (GraphicInterface.getModel().getAccounts().get(0).isEmpty())
-                    GraphicInterface.getModel().removeRow(0);                           //removing first empty row
-            } catch (IndexOutOfBoundsException ignored){}
-
             //reading lines from specified text file
             BufferedReader fileReader = new BufferedReader(new FileReader(selectedFile));
             String line;

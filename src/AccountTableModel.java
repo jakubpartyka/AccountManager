@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
+
 public class AccountTableModel extends AbstractTableModel {
     private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","status timestamp"};
     private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class};
@@ -11,6 +13,7 @@ public class AccountTableModel extends AbstractTableModel {
     private List<Account> temporaryAccountList = new ArrayList<>();
 
     AccountTableModel(){
+        //for some reason table model cannot be created with null data object. This one is created and deleted right away in main GUI class. It's not visible to the user
         accounts.add(new Account(" ", " ", " ", " ", " ", " ", " ", "data not loaded"));
     }
 
@@ -18,7 +21,7 @@ public class AccountTableModel extends AbstractTableModel {
         //method that handles user deletion with "delete" button
         if(selectedRows.length == 0)
             return;
-        String message = selectedRows.length > 1 ? "Are you sure you want to delete " + selectedRows.length + " rows?" : "Are you sure you want to delete this row?";
+        String message = selectedRows.length > 1 ? "Are you sure you want to delete " + selectedRows.length + " account?" : "Are you sure you want to delete this account?";
         int n = JOptionPane.showConfirmDialog(null, message,"Confirm deletion", JOptionPane.YES_NO_OPTION);
         if(n == 0) {
             List<Account> toDelete = new ArrayList<>();
@@ -28,13 +31,19 @@ public class AccountTableModel extends AbstractTableModel {
             clearSearch();
             accounts.removeAll(toDelete);
             fireTableDataChanged();
-            String deletedMessage = selectedRows.length > 1 ? toDelete.size() + " rows deleted" : "1 row deleted";
+            String deletedMessage = selectedRows.length > 1 ? toDelete.size() + " accounts deleted" : "1 account deleted";
             JOptionPane.showMessageDialog(null, deletedMessage);
         }
     }
 
     void addAccounts(List<Account> accounts){
         this.accounts.addAll(accounts);
+        fireTableDataChanged();
+    }
+
+    void addAccount(Account account){
+        this.accounts.add(account);
+        fireTableDataChanged();
     }
 
     List<Account> getAccountsByIndexes(int [] indexes){
@@ -173,5 +182,4 @@ public class AccountTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return (columnIndex == 3 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8);
     }
-
 }

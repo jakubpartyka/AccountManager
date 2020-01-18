@@ -5,6 +5,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.security.Key;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,9 +37,9 @@ public class GraphicInterface {
         //Creating the MenuBar and adding components
         JMenuBar mb = new JMenuBar();
         JMenu managerTab = new JMenu("Manager");
-        JMenu fileTab = new JMenu("File");
+        JMenu accountTab = new JMenu("Accounts");
         mb.add(managerTab);
-        mb.add(fileTab);
+        mb.add(accountTab);
 
         //defining items for Manager tab
         JMenuItem m11 = new JMenuItem("Test accounts");
@@ -59,11 +60,12 @@ public class GraphicInterface {
         m16.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 
-        //defining items for file tab
-        JMenuItem m21 = new JMenuItem("Load data");
-        JMenuItem m22 = new JMenuItem("Save data");
-        JMenuItem m23 = new JMenuItem("Save data as...");
+        //defining items for account tab
+        JMenuItem m21 = new JMenuItem("Load");
+        JMenuItem m22 = new JMenuItem("Save");
+        JMenuItem m23 = new JMenuItem("Save as...");
         JMenuItem m24 = new JMenuItem("Save selected as...");
+        JMenuItem m25 = new JMenuItem("Add...");
 
 
         //file tab action listeners
@@ -76,13 +78,16 @@ public class GraphicInterface {
             else
                 saveFileAs(model.getAccountsByIndexes(table.getSelectedRows()),false);
         });
+        m25.addActionListener(e -> new AccountCreator());
 
         //file tab accelerators
         m21.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         m22.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-
+        m25.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_N,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()
+        ));
 
         //adding menu items to tabs
         managerTab.add(m11);
@@ -93,11 +98,13 @@ public class GraphicInterface {
         managerTab.addSeparator();
         managerTab.add(m16);
 
-        fileTab.add(m21);
-        fileTab.add(m22);
-        fileTab.add(m23);
-        fileTab.addSeparator();
-        fileTab.add(m24);
+        accountTab.add(m21);
+        accountTab.add(m22);
+        accountTab.add(m23);
+        accountTab.addSeparator();
+        accountTab.add(m24);
+        accountTab.addSeparator();
+        accountTab.add(m25);
 
 
         //Creating the panel at bottom and adding components
@@ -111,7 +118,7 @@ public class GraphicInterface {
         JButton selectNone = new JButton("Select None");
 
         //status label
-        selectionLabel = new JLabel("none selected");
+        selectionLabel = new JLabel("data not loaded");
         selectionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 
 
@@ -151,6 +158,7 @@ public class GraphicInterface {
 
         //JTable at the Center
         model = new AccountTableModel();
+        model.clearAccounts();
         table = new JTable(model);
         JScrollPane pane = new JScrollPane(table);
         table.addMouseListener(new MouseAdapter() {
