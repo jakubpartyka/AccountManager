@@ -1,3 +1,6 @@
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 @SuppressWarnings({"WeakerAccess", "unused"})
 class Account {
     //final fields
@@ -8,6 +11,7 @@ class Account {
     final static String STATUS_INACTIVE = "inactive";
     final static String STATUS_ACTION_REQUIRED = "action required";
     final static String STATUS_LOGIN_REQUIRED = "login required";
+    final static String STATUS_LOGIN_FAILED = "login failed";
     final static String STATUS_NOT_FOUND = "not found";
 
     //personal data
@@ -137,11 +141,9 @@ class Account {
 
     void setStatus(String status) {
         this.status = status;
+        this.statusDate = new SimpleDateFormat("DD-MM-YY HH.mm.ss").format(Calendar.getInstance().getTime());
     }
 
-    void setStatusDate(String statusDate) {
-        this.statusDate = statusDate;
-    }
 
     String getStatus() {
         return status;
@@ -149,5 +151,9 @@ class Account {
 
     String getStatusDate() {
         return statusDate;
+    }
+
+    public void setStatusDate(String statusDate) {
+        this.statusDate = statusDate;
     }
 }

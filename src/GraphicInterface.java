@@ -54,15 +54,28 @@ public class GraphicInterface {
 
         //defining items for file tab
         JMenuItem m21 = new JMenuItem("Load data");
-        m21.addActionListener(a -> loadFile());
+        JMenuItem m22 = new JMenuItem("Save data");
+        JMenuItem m23 = new JMenuItem("Save data as...");
+        JMenuItem m24 = new JMenuItem("Save selected as...");
+
+
+        //file tab action listeners
+        m21.addActionListener(e -> loadFile());
+        m22.addActionListener(e -> saveFile(model.getAccounts()));
+        m23.addActionListener(e -> saveFileAs(model.getAccounts(),true));
+        m24.addActionListener(e -> {
+            if(table.getSelectedRows().length == 0)
+                JOptionPane.showMessageDialog(null,"please select account(s) to save","no accounts were choosen",JOptionPane.PLAIN_MESSAGE);
+            else
+                saveFileAs(model.getAccountsByIndexes(table.getSelectedRows()),false);
+        });
+
+        //file tab accelerators
         m21.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        JMenuItem m22 = new JMenuItem("Save data");
-        m22.addActionListener(a -> saveFile());
         m22.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        JMenuItem m23 = new JMenuItem("Save data as...");
-        m23.addActionListener(a -> saveFileAs());
+
 
         //adding menu items to tabs
         managerTab.add(m11);
@@ -76,6 +89,8 @@ public class GraphicInterface {
         fileTab.add(m21);
         fileTab.add(m22);
         fileTab.add(m23);
+        fileTab.addSeparator();
+        fileTab.add(m24);
 
 
         //Creating the panel at bottom and adding components
@@ -246,18 +261,18 @@ public class GraphicInterface {
             System.out.println("file choosing cancelled");          //if no file was chosen (eg. fileChooser was closed) operation is cancelled.
     }
 
-    private static void saveFile(){
+    private static void saveFile(List<Account> allAccounts){
         //this method saves current model contents to specified text file. If save file is not specified saveFileAs() method will be invoked
         try {
-            if(DataManager.save(saveFile))
+            if(DataManager.save(saveFile, allAccounts))
                 JOptionPane.showMessageDialog(null, "Data saved to " + saveFile);
         }
         catch (NullPointerException e) {
-            saveFileAs();
+            saveFileAs(allAccounts,true);
         }
     }
 
-    private static void saveFileAs() {
+    private static void saveFileAs(List<Account> accountsToSave, boolean setDestinationAsDefault) {
         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".txt", "txt", "text");          //accepting text files only
         fileChooser.setFileFilter(filter);
@@ -267,10 +282,11 @@ public class GraphicInterface {
         if (selectedFile == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
             if(!fileToSave.getAbsolutePath().endsWith(".txt"))
-                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");   //making sure .txt file will be used
-            saveFile = fileToSave;                                                        //setting default save file
-            if(DataManager.save(fileToSave))
-                JOptionPane.showMessageDialog(null, "successfully saved data to " + saveFile.getAbsolutePath());
+                fileToSave = new File(fileToSave.getAbsolutePath() + ".txt");   //make sure .txt file will be used
+            if(setDestinationAsDefault)
+                saveFile = fileToSave;                                                        //setting default save file
+            if(DataManager.save(fileToSave, accountsToSave))
+                JOptionPane.showMessageDialog(null, "successfully saved data to " + fileToSave.getAbsolutePath());
             else
                 JOptionPane.showMessageDialog(null, "Save failed...");
         }
@@ -285,7 +301,11 @@ public class GraphicInterface {
 
     private static void runWebTask(int [] indexList, String taskName){
         List<Account> accountsForTask = model.getAccountsByIndexes(indexList);
-        //todo what to do if none selected
+
+        if(accountsForTask.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please select account(s) for this task", "No accounts selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         switch (taskName) {
 
@@ -297,7 +317,7 @@ public class GraphicInterface {
 
             case "Show Profile" :
                 if(accountsForTask.size()>1)
-                    JOptionPane.showConfirmDialog(null, "Please select one account", "More than one account selected", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(null, "Please select one account", "More than one account selected", JOptionPane.PLAIN_MESSAGE);
                 else {
                     WebTask showProfile = new ShowProfile(accountsForTask.get(0));
                     Thread thread = new Thread(showProfile);
@@ -308,7 +328,7 @@ public class GraphicInterface {
 
             case "Log In" :
                 if(accountsForTask.size()>1)
-                    JOptionPane.showConfirmDialog(null, "Please select one account", "More than one account selected", JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(null, "Please select one account", "More than one account selected", JOptionPane.PLAIN_MESSAGE);
                 else {
                     WebTask logInTask = new LogIn(accountsForTask.get(0));
                     Thread thread = new Thread(logInTask);

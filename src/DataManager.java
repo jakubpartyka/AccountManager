@@ -6,6 +6,7 @@ import java.util.*;
 
 class DataManager {
     private static List<Account> accountsToAdd = new ArrayList<>();                      //list for keeping accountsToAdd. Identified by unique profile id
+    private static List<Account> initialData    = new ArrayList<>();                     //list of accounts that were loaded - for exit without saving check
 
     static int load(File selectedFile){
         //load data from file
@@ -106,13 +107,13 @@ class DataManager {
         return accountsToAdd;
     }
 
-    static boolean save(File fileToSave) {
+    static boolean save(File fileToSave, List<Account> accountsToSave) {
         //save data to file
 
         GraphicInterface.getModel().clearSearch();          //resetting main model so all data are saved to file
         try {
             FileWriter fw = new FileWriter(fileToSave);
-            for (Account account : GraphicInterface.getModel().getAccounts()) {
+            for (Account account : accountsToSave) {
                 fw.write(account.toString());
                 fw.write("\n");
             }

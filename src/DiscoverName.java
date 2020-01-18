@@ -7,8 +7,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.swing.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -64,8 +62,6 @@ public class DiscoverName extends WebTask {
                     GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
                 }
             }
-            //set status timestamp
-            currentAccount.setStatusDate(new SimpleDateFormat("DD-MM-YY HH.mm.ss").format(Calendar.getInstance().getTime()));       //adding timestamp of status check
 
             //sleep before next iteration (if not on last element)
             if(operatingAccounts.indexOf(currentAccount) != operatingAccounts.size()-1) {

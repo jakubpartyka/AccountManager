@@ -1,5 +1,4 @@
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -20,7 +19,7 @@ class LogIn extends WebTask {
     @Override
     public void run() {
         //setting up a web driver with popup blocking
-        Map<String, Object> prefs = new HashMap<String, Object>();
+        Map<String, Object> prefs = new HashMap<>();
         prefs.put("profile.default_content_setting_values.notifications", 2);
         ChromeOptions options = new ChromeOptions();
         options.setExperimentalOption("prefs", prefs);
@@ -54,10 +53,9 @@ class LogIn extends WebTask {
         catch (NoSuchElementException e){
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "failed to log in", "failed to log in",JOptionPane.WARNING_MESSAGE);
+            currentAccount.setStatus(Account.STATUS_LOGIN_FAILED);              //setting account status to login_failed
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 }
