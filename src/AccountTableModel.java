@@ -25,6 +25,7 @@ public class AccountTableModel extends AbstractTableModel {
             for (int selectedRow : selectedRows) {
                 toDelete.add(accounts.get(selectedRow));
             }
+            clearSearch();
             accounts.removeAll(toDelete);
             fireTableDataChanged();
             String deletedMessage = selectedRows.length > 1 ? toDelete.size() + " rows deleted" : "1 row deleted";
@@ -32,6 +33,86 @@ public class AccountTableModel extends AbstractTableModel {
         }
     }
 
+    void addAccounts(List<Account> accounts){
+        this.accounts.addAll(accounts);
+    }
+
+    List<Account> getAccountsByIndexes(int [] indexes){
+        List<Account> toReturn = new ArrayList<>();
+        for (int index:indexes) {
+            toReturn.add(accounts.get(index));
+        }
+        return toReturn;
+    }
+
+    List<Account> getAccounts() {
+        return accounts;
+    }
+
+    void removeRow(int i) {
+        accounts.remove(i);
+        this.fireTableDataChanged();
+    }
+
+    void removeRow(Account account) {
+        accounts.remove(account);
+        this.fireTableDataChanged();
+    }
+
+    void clearAccounts(){
+        this.accounts.clear();
+    }
+
+    void clearSearch(){
+        //clear search results
+        if(!temporaryAccountList.isEmpty()) {
+            accounts.clear();
+            accounts.addAll(temporaryAccountList);
+            temporaryAccountList.clear();
+            fireTableDataChanged();
+        }
+    }
+
+    void searchResultsFor(String text) {
+        //apply search filter
+
+        //resetting accounts if some search was done before without clearing
+        clearSearch();
+
+        //applying new search filter
+        temporaryAccountList.addAll(accounts);        //saving main list to backup
+        List<Account> matching = new ArrayList<>();
+        for (Account account : accounts){
+            String[] fields = account.toString().split(":");
+            for (String field : fields){
+                if (field.toLowerCase().contains(text.toLowerCase()))
+                    if(!matching.contains(account))
+                        matching.add(account);
+            }
+        }
+        accounts.clear();
+        accounts.addAll(matching);
+        fireTableDataChanged();
+    }
+
+    @Override
+    public void fireTableDataChanged() {
+        super.fireTableDataChanged();
+        GraphicInterface.updateSelectionLabel();
+    }
+
+    int getTotalCount(){
+        //returns the number of all accounts (not only those included in search results)
+        if (temporaryAccountList.size() > accounts.size())
+            return temporaryAccountList.size();
+        else
+            return accounts.size();
+    }
+
+
+
+
+    //overriding methods
     @Override
     public String getColumnName(int column)
     {
@@ -91,85 +172,6 @@ public class AccountTableModel extends AbstractTableModel {
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return (columnIndex == 3 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8);
-    }
-
-    void addAccounts(List<Account> accounts){
-        this.accounts.addAll(accounts);
-    }
-
-    List<Account> getAccountsByIndexes(int [] indexes){
-        List<Account> toReturn = new ArrayList<>();
-        for (int index:indexes) {
-            toReturn.add(accounts.get(index));
-        }
-        return toReturn;
-    }
-
-    List<Account> getAccounts() {
-        return accounts;
-    }
-
-    void removeRow(int i) {
-        accounts.remove(i);
-        this.fireTableDataChanged();
-    }
-
-    void removeRow(Account account) {
-        accounts.remove(account);
-        this.fireTableDataChanged();
-    }
-
-    void clearAccounts(){
-        this.accounts.clear();
-    }
-
-    void clearSearch(){
-        //clear search results
-        if(temporaryAccountList.size() > accounts.size()) {
-            List<Account> tmp = temporaryAccountList;
-            temporaryAccountList = accounts;
-            accounts = tmp;
-            tmp.clear();
-            fireTableDataChanged();
-        }
-    }
-
-    void searchResultsFor(String text) {
-        //apply search filter
-
-        //resetting accounts if some search was done before without clearing
-        if(temporaryAccountList.size() > accounts.size()) {
-            List<Account> tmp = temporaryAccountList;
-            temporaryAccountList = accounts;
-            accounts = tmp;
-        }
-
-        //applying new search filter
-        temporaryAccountList = accounts;        //saving main list to backup
-        List<Account> tmp = new ArrayList<>();
-        for (Account account : accounts){
-            String[] fields = account.toString().split(":");
-            for (String field : fields){
-                if (field.contains(text))
-                    if(!tmp.contains(account))
-                        tmp.add(account);
-            }
-        }
-        accounts = tmp;
-        fireTableDataChanged();
-    }
-
-    @Override
-    public void fireTableDataChanged() {
-        super.fireTableDataChanged();
-        GraphicInterface.updateSelectionLabel();
-    }
-
-    int getTotalCount(){
-        if (temporaryAccountList.size() > accounts.size())
-            return temporaryAccountList.size();
-        else
-            return accounts.size();
     }
 
 }

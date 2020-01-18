@@ -156,6 +156,8 @@ public class GraphicInterface {
         //action listener for buttons
         delete.addActionListener(l -> {
             model.delete(table.getSelectedRows());
+            searchBox.setText("");
+            search.setText("Search");
             updateSelectionLabel();
         });
 

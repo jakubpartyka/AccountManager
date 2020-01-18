@@ -7,12 +7,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 @SuppressWarnings("unused")
 public class DiscoverName extends WebTask {
-    private boolean useIncognitoMode = true;
-    private boolean useHeadlessMode = true;
+    private boolean useIncognitoMode    = true;
+    private boolean useHeadlessMode     = true;
+    private long    coolDown            = 5000;
 
     DiscoverName(Account account) {
         super(account);
@@ -40,12 +43,7 @@ public class DiscoverName extends WebTask {
 
         for (Account currentAccount : operatingAccounts) {
             String profilePage = "https://www.facebook.com/" + currentAccount.getId();
-//            driver.get(profilePage);                                //navigating to target's profile page
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            driver.get(profilePage);                                //navigating to target's profile page
             try{
                 WebElement nameTag = driver.findElementByXPath("//*[@class='_2nlw _2nlv']");
                 currentAccount.setName(nameTag.getText());                      //setting name to discovered value
@@ -57,6 +55,14 @@ public class DiscoverName extends WebTask {
                 unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)
                 currentAccount.setStatus(Account.STATUS_ACTION_NEEDED);
                 GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
+            }
+            currentAccount.setStatusDate(new SimpleDateFormat("DD-MM-YY HH:mm:ss").format(Calendar.getInstance().getTime()));       //adding timestamp of status check
+
+            //sleep before next iteration
+            try {
+                Thread.sleep(coolDown);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         if(unsuccessful.size() > 0){
@@ -74,5 +80,9 @@ public class DiscoverName extends WebTask {
 
     public void setUseHeadlessMode(boolean useHeadlessMode) {
         this.useHeadlessMode = useHeadlessMode;
+    }
+
+    public void setCoolDown(int seconds) {
+        this.coolDown = seconds * 1000;
     }
 }
