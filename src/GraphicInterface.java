@@ -38,16 +38,18 @@ public class GraphicInterface {
         JMenuItem m12 = new JMenuItem("Change Passwords");
         JMenuItem m13 = new JMenuItem("Discover names");
         JMenuItem m14 = new JMenuItem("Show profile");
-        JMenuItem m15 = new JMenuItem("Exit");
+        JMenuItem m15 = new JMenuItem("Log in to profile");
+        JMenuItem m16 = new JMenuItem("Exit");
 
 
         //listeners for Manager Tab
         m13.addActionListener(e -> runWebTask(table.getSelectedRows(),"Discover Name"));
         m14.addActionListener(e -> runWebTask(table.getSelectedRows(),"Show Profile"));
+        m15.addActionListener(e -> runWebTask(table.getSelectedRows(),"Log In"));
 
         //quit listener and shortcut
-        m15.addActionListener(l -> exit());
-        m15.setAccelerator(KeyStroke.getKeyStroke(
+        m16.addActionListener(l -> exit());
+        m16.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         //defining items for file tab
@@ -67,8 +69,9 @@ public class GraphicInterface {
         managerTab.add(m12);
         managerTab.add(m13);
         managerTab.add(m14);
-        managerTab.addSeparator();
         managerTab.add(m15);
+        managerTab.addSeparator();
+        managerTab.add(m16);
 
         fileTab.add(m21);
         fileTab.add(m22);
@@ -297,8 +300,19 @@ public class GraphicInterface {
                     JOptionPane.showConfirmDialog(null, "Please select one account", "More than one account selected", JOptionPane.OK_OPTION);
                 else {
                     WebTask showProfile = new ShowProfile(accountsForTask.get(0));
-                    Thread thread2 = new Thread(showProfile);
-                    thread2.start();
+                    Thread thread = new Thread(showProfile);
+                    thread.start();
+                    break;
+                }
+                break;
+
+            case "Log In" :
+                if(accountsForTask.size()>1)
+                    JOptionPane.showConfirmDialog(null, "Please select one account", "More than one account selected", JOptionPane.OK_OPTION);
+                else {
+                    WebTask logInTask = new LogIn(accountsForTask.get(0));
+                    Thread thread = new Thread(logInTask);
+                    thread.start();
                     break;
                 }
                 break;

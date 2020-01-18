@@ -112,7 +112,7 @@ class DataManager {
         GraphicInterface.getModel().clearSearch();          //resetting main model so all data are saved to file
         try {
             FileWriter fw = new FileWriter(fileToSave);
-            for (Account account : accountsToAdd) {
+            for (Account account : GraphicInterface.getModel().getAccounts()) {
                 fw.write(account.toString());
                 fw.write("\n");
             }

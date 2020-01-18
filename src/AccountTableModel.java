@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AccountTableModel extends AbstractTableModel {
-    private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","last status date"};
+    private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","status timestamp"};
     private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class};
     private List<Account> accounts = new ArrayList<>();
     private List<Account> temporaryAccountList = new ArrayList<>();
