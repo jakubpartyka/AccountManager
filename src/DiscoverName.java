@@ -52,17 +52,28 @@ public class DiscoverName extends WebTask {
                 GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
             }
             catch (NoSuchElementException e){
-                unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)
-                currentAccount.setStatus(Account.STATUS_ACTION_NEEDED);
-                GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
+                try {
+                    WebElement logInInfo = driver.findElementByXPath("//*[@class='_585p img sp_W-v012zTIDG sx_66c903']");
+                    unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)
+                    currentAccount.setStatus(Account.STATUS_LOGIN_REQUIRED);
+                    GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
+                }
+                catch (NoSuchElementException e1) {
+                    unsuccessful.add(currentAccount);               //add to unsuccessful if name could not be resolved (or found)
+                    currentAccount.setStatus(Account.STATUS_ACTION_REQUIRED);
+                    GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
+                }
             }
+            //set status timestamp
             currentAccount.setStatusDate(new SimpleDateFormat("DD-MM-YY HH.mm.ss").format(Calendar.getInstance().getTime()));       //adding timestamp of status check
 
-            //sleep before next iteration
-            try {
-                Thread.sleep(coolDown);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            //sleep before next iteration (if not on last element)
+            if(operatingAccounts.indexOf(currentAccount) != operatingAccounts.size()-1) {
+                try {
+                    Thread.sleep(coolDown);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         if(unsuccessful.size() > 0){

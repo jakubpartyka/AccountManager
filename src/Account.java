@@ -6,7 +6,8 @@ class Account {
     final static String STATUS_OPERATIONAL = "operational";
     final static String ONLINE = "online";
     final static String STATUS_INACTIVE = "inactive";
-    final static String STATUS_ACTION_NEEDED = "action required";
+    final static String STATUS_ACTION_REQUIRED = "action required";
+    final static String STATUS_LOGIN_REQUIRED = "login required";
     final static String STATUS_NOT_FOUND = "not found";
 
     //personal data

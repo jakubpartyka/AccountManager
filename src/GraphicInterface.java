@@ -282,13 +282,16 @@ public class GraphicInterface {
 
     private static void runWebTask(int [] indexList, String taskName){
         List<Account> accountsForTask = model.getAccountsByIndexes(indexList);
+        //todo what to do if none selected
 
         switch (taskName) {
+
             case "Discover Name" :
                 WebTask discoverName = new DiscoverName(accountsForTask);
                 Thread thread1 = new Thread(discoverName);
                 thread1.start();
                 break;
+
             case "Show Profile" :
                 if(accountsForTask.size()>1)
                     JOptionPane.showConfirmDialog(null, "Please select one account", "More than one account selected", JOptionPane.OK_OPTION);
@@ -299,6 +302,7 @@ public class GraphicInterface {
                     break;
                 }
                 break;
+
             default :
                 try {
                     throw new Exception("No such operation defined");
