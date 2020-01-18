@@ -221,8 +221,16 @@ public class GraphicInterface {
     }
 
     private static void exit() {
-        //this method checks if current file was saved before exiting
-        //todo file save check
+        if(!DataManager.changesSaved()) {
+            saveFile(model.getAccounts());
+            if(!DataManager.changesSaved()){
+                int i = JOptionPane.showConfirmDialog(null,"Warning! Unsaved changes will be lost. Do you want to proceed?","changes not saved",JOptionPane.YES_NO_OPTION);
+                if(i == 0)
+                    System.exit(0);
+                else
+                    return;
+            }
+        }
         System.exit(0);
     }
 

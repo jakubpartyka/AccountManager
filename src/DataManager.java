@@ -6,7 +6,8 @@ import java.util.*;
 
 class DataManager {
     private static List<Account> accountsToAdd = new ArrayList<>();                      //list for keeping accountsToAdd. Identified by unique profile id
-    private static List<Account> initialData    = new ArrayList<>();                     //list of accounts that were loaded - for exit without saving check
+    private static List<Account> initialAccounts = new ArrayList<>();                     //list of accounts that were loaded - for exit without saving check
+    private static List<Account> lastSavedAccounts = new ArrayList<>();                       //list of saved accounts - for exit without saving check
 
     static int load(File selectedFile){
         //load data from file
@@ -49,7 +50,8 @@ class DataManager {
                 return handleDuplicates();  //return amount of affected rows
             }
             counter = accountsToAdd.size();
-            return counter;                 //if no duplicates were found, amount of added rows will be returned
+            initialAccounts.addAll(accountsToAdd);            //saving loaded data for further comparing
+            return counter;                               //if no duplicates were found, amount of added rows will be returned
         }
         catch (IOException e){
             return -1;                      //error return code
@@ -122,6 +124,46 @@ class DataManager {
             e.printStackTrace();
             return false;
         }
+        if(accountsToSave.size() == GraphicInterface.getModel().getTotalCount()){
+            lastSavedAccounts.clear();
+            lastSavedAccounts.addAll(accountsToSave);                               //noting that changes were saved only if all accounts were exported
+        }
         return true;
+    }
+
+    static boolean changesSaved(){
+        //this method checks if changes were saved
+
+        AccountTableModel model = GraphicInterface.getModel();
+        model.clearSearch();
+        List<Account> accounts = model.getAccounts();
+
+        return changesMade(accounts,lastSavedAccounts);
+    }
+
+    @SuppressWarnings("UnnecessaryContinue")
+    private static boolean changesMade(List<Account> list1, List<Account> list2){
+        for (Account account1:list1) {
+            for (Account account2 : list2) {
+                if(
+                            account1.getId().equals(account2.getId())
+                        && (account1.getName().equals(account2.getName()))
+
+                        && (account1.getLogin().equals(account2.getLogin()))
+                        && (account1.getPassword().equals(account2.getPassword()))
+
+                        && (account1.getEmail().equals(account2.getEmail()))
+                        && (account1.getEmailPassword().equals(account2.getEmailPassword()))
+
+                        && (account1.getStatus().equals(account2.getStatus()))
+                        && (account1.getStatusDate().equals(account2.getStatusDate()))
+
+                        && (account1.getDateOfBirth().equals(account2.getDateOfBirth())))
+                    continue;
+                else
+                    return true;
+            }
+        }
+        return false;
     }
 }
