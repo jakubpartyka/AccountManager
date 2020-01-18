@@ -131,39 +131,40 @@ class DataManager {
         return true;
     }
 
+    @SuppressWarnings("UnnecessaryContinue")
     static boolean changesSaved(){
         //this method checks if changes were saved
-
         AccountTableModel model = GraphicInterface.getModel();
         model.clearSearch();
         List<Account> accounts = model.getAccounts();
 
-        return changesMade(accounts,lastSavedAccounts);
-    }
+        if(lastSavedAccounts.isEmpty())
+            lastSavedAccounts.addAll(initialAccounts);
 
-    @SuppressWarnings("UnnecessaryContinue")
-    private static boolean changesMade(List<Account> list1, List<Account> list2){
-        for (Account account1:list1) {
-            for (Account account2 : list2) {
+        if(accounts.size() != lastSavedAccounts.size())
+            return false;
+
+        for (int i = 0; i < accounts.size() ; i++) {
+            Account account1 = accounts.get(i);
+            Account account2 = lastSavedAccounts.get(i);
                 if(
-                            account1.getId().equals(account2.getId())
-                        && (account1.getName().equals(account2.getName()))
+                        account1.getId().equals(account2.getId())
+                                && (account1.getName().equals(account2.getName()))
 
-                        && (account1.getLogin().equals(account2.getLogin()))
-                        && (account1.getPassword().equals(account2.getPassword()))
+                                && (account1.getLogin().equals(account2.getLogin()))
+                                && (account1.getPassword().equals(account2.getPassword()))
 
-                        && (account1.getEmail().equals(account2.getEmail()))
-                        && (account1.getEmailPassword().equals(account2.getEmailPassword()))
+                                && (account1.getEmail().equals(account2.getEmail()))
+                                && (account1.getEmailPassword().equals(account2.getEmailPassword()))
 
-                        && (account1.getStatus().equals(account2.getStatus()))
-                        && (account1.getStatusDate().equals(account2.getStatusDate()))
+                                && (account1.getStatus().equals(account2.getStatus()))
+                                && (account1.getStatusDate().equals(account2.getStatusDate()))
 
-                        && (account1.getDateOfBirth().equals(account2.getDateOfBirth())))
+                                && (account1.getDateOfBirth().equals(account2.getDateOfBirth())))
                     continue;
                 else
-                    return true;
+                    return false;
             }
-        }
-        return false;
+        return true;
     }
 }

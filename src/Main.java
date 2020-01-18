@@ -8,7 +8,6 @@ public class Main {
 
 
 //things to do
-//todo save selection only
 //todo selection tab?
 //todo - current operation status
 //todo cancel current opertion

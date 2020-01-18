@@ -3,10 +3,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,9 +17,19 @@ public class GraphicInterface {
 
     public static void main(String args[]) {
 
+        //overriding MAC-OS CMC+Q
+        System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
+
         //Creating the Frame
         JFrame frame = new JFrame("Facebook Account Manager");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("window closing");
+                exit();
+            }
+        });
         frame.setSize(900, 500);
         frame.setLocation(250,150);
 
@@ -50,7 +57,7 @@ public class GraphicInterface {
         //quit listener and shortcut
         m16.addActionListener(l -> exit());
         m16.setAccelerator(KeyStroke.getKeyStroke(
-                KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 
         //defining items for file tab
         JMenuItem m21 = new JMenuItem("Load data");
