@@ -37,15 +37,17 @@ public class GraphicInterface {
         JMenuItem m11 = new JMenuItem("Test accounts");
         JMenuItem m12 = new JMenuItem("Change Passwords");
         JMenuItem m13 = new JMenuItem("Discover names");
-        JMenuItem m14 = new JMenuItem("Exit");
+        JMenuItem m14 = new JMenuItem("Show profile");
+        JMenuItem m15 = new JMenuItem("Exit");
 
 
         //listeners for Manager Tab
-        m13.addActionListener(e -> runWebTask(table.getSelectedRows(),"DiscoverName"));
+        m13.addActionListener(e -> runWebTask(table.getSelectedRows(),"Discover Name"));
+        m14.addActionListener(e -> runWebTask(table.getSelectedRows(),"Show Profile"));
 
         //quit listener and shortcut
-        m14.addActionListener(l -> exit());
-        m14.setAccelerator(KeyStroke.getKeyStroke(
+        m15.addActionListener(l -> exit());
+        m15.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
         //defining items for file tab
@@ -64,8 +66,9 @@ public class GraphicInterface {
         managerTab.add(m11);
         managerTab.add(m12);
         managerTab.add(m13);
-        managerTab.addSeparator();
         managerTab.add(m14);
+        managerTab.addSeparator();
+        managerTab.add(m15);
 
         fileTab.add(m21);
         fileTab.add(m22);
@@ -281,10 +284,20 @@ public class GraphicInterface {
         List<Account> accountsForTask = model.getAccountsByIndexes(indexList);
 
         switch (taskName) {
-            case "DiscoverName" :
+            case "Discover Name" :
                 WebTask discoverName = new DiscoverName(accountsForTask);
-                Thread thread = new Thread(discoverName);
-                thread.start();
+                Thread thread1 = new Thread(discoverName);
+                thread1.start();
+                break;
+            case "Show Profile" :
+                if(accountsForTask.size()>1)
+                    JOptionPane.showConfirmDialog(null, "Please select one account", "More than one account selected", JOptionPane.OK_OPTION);
+                else {
+                    WebTask showProfile = new ShowProfile(accountsForTask.get(0));
+                    Thread thread2 = new Thread(showProfile);
+                    thread2.start();
+                    break;
+                }
                 break;
             default :
                 try {

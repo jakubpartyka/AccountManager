@@ -56,7 +56,7 @@ public class DiscoverName extends WebTask {
                 currentAccount.setStatus(Account.STATUS_ACTION_NEEDED);
                 GraphicInterface.getModel().fireTableDataChanged();             //re-rendering the table
             }
-            currentAccount.setStatusDate(new SimpleDateFormat("DD-MM-YY HH:mm:ss").format(Calendar.getInstance().getTime()));       //adding timestamp of status check
+            currentAccount.setStatusDate(new SimpleDateFormat("DD-MM-YY HH.mm.ss").format(Calendar.getInstance().getTime()));       //adding timestamp of status check
 
             //sleep before next iteration
             try {
