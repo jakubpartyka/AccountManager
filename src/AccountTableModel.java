@@ -7,8 +7,8 @@ import java.util.List;
 @SuppressWarnings("unused")
 
 public class AccountTableModel extends AbstractTableModel {
-    private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","status timestamp"};
-    private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class};
+    private static final String [] columnNames = {"login","password","email","email pass","id","b. date","name","status","status timestamp", "service", "notes"};
+    private final Class[] columnClass = new Class[] {String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class,String.class,String.class};
     private List<Account> accounts = new ArrayList<>();
     private List<Account> temporaryAccountList = new ArrayList<>();
 
@@ -157,6 +157,8 @@ public class AccountTableModel extends AbstractTableModel {
             case 6 : return row.getName();
             case 7 : return row.getStatus();
             case 8 : return row.getStatusDate();
+            case 9 : return row.getService();
+            case 10: return row.getNotes();
         }
         return null;
     }
@@ -174,12 +176,14 @@ public class AccountTableModel extends AbstractTableModel {
             case 5 : row.setDateOfBirth(input); return;
             case 6 : row.setName(input); return;
             case 7 : row.setStatus(input); return;
-            case 8 : row.setStatusDate(input);
+            case 8 : row.setStatusDate(input); return;
+            case 9 : row.setService(input); return;
+            case 10: row.setNotes(input);
         }
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return (columnIndex == 3 || columnIndex == 6 || columnIndex == 7 || columnIndex == 8);
+        return (columnIndex == 3 || columnIndex == 6 || columnIndex == 7 || columnIndex > 7);
     }
 }

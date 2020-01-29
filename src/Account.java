@@ -17,6 +17,8 @@ class Account {
     //personal data
     private String name;
     private String dateOfBirth;
+    private String service;
+    private String notes;
 
     //login data
     private String id;
@@ -156,6 +158,21 @@ class Account {
         this.statusDate = new SimpleDateFormat("DD-MM-YY HH.mm.ss").format(Calendar.getInstance().getTime());
     }
 
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public String getService() {
+        return service;
+    }
 
     String getStatus() {
         return status;

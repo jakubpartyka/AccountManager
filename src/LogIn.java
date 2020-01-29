@@ -47,6 +47,13 @@ class LogIn extends WebTask {
                 Thread.sleep(2000);
                 password.sendKeys(currentAccount.getPassword());
                 submit.click();
+                Thread.sleep(500);                  //wait for page to load
+            }
+            catch (NoSuchElementException ignored){}
+            try {
+                //if this element can be located login was successful
+                WebElement element = driver.findElementByXPath("//*[@class='_2qgu _7ql _1m6h img']");
+                currentAccount.setStatus(Account.STATUS_OPERATIONAL);
             }
             catch (NoSuchElementException ignored){}
         }
