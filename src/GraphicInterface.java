@@ -47,17 +47,30 @@ public class GraphicInterface {
         JMenuItem m13 = new JMenuItem("Discover names");
         JMenuItem m14 = new JMenuItem("Show profile");
         JMenuItem m15 = new JMenuItem("Log in to profile");
-        JMenuItem m16 = new JMenuItem("Exit");
+        JMenuItem m16 = new JMenuItem("Set service");
+        JMenuItem m17 = new JMenuItem("Exit");
 
 
         //listeners for Manager Tab
         m13.addActionListener(e -> runWebTask(table.getSelectedRows(),"Discover Name"));
         m14.addActionListener(e -> runWebTask(table.getSelectedRows(),"Show Profile"));
         m15.addActionListener(e -> runWebTask(table.getSelectedRows(),"Log In"));
+        m16.addActionListener(e -> {
+            if(table.getSelectedRows().length < 1)
+                //noinspection UnnecessaryReturnStatement
+                return;
+            else {
+                String service = JOptionPane.showInputDialog("Enter service to be set:");
+                for (int row : table.getSelectedRows()) {
+                    Account selected = model.getAccounts().get(row);
+                    selected.setService(service);
+                }
+            }
+        });
 
         //quit listener and shortcut
-        m16.addActionListener(l -> exit());
-        m16.setAccelerator(KeyStroke.getKeyStroke(
+        m17.addActionListener(l -> exit());
+        m17.setAccelerator(KeyStroke.getKeyStroke(
                 KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
 
         //defining items for account tab
@@ -95,8 +108,9 @@ public class GraphicInterface {
         managerTab.add(m13);
         managerTab.add(m14);
         managerTab.add(m15);
-        managerTab.addSeparator();
         managerTab.add(m16);
+        managerTab.addSeparator();
+        managerTab.add(m17);
 
         accountTab.add(m21);
         accountTab.add(m22);

@@ -12,7 +12,7 @@ class AccountCreator {
     }
 
     private void showGUI() {
-        String[] labels = {"Login: ", "Password: ", "Email: ", "Email pass: ", "ID: ", "Birth date: ", "Name: ", "Status: ", "Status timestamp: "};
+        String[] labels = {"Login: ", "Password: ", "Email: ", "Email pass: ", "ID: ", "Birth date: ", "Name: ", "Service: ", "Status: ", "Status timestamp: "};
         int numPairs = labels.length + 1;
 
         //create frame
